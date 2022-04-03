@@ -1,0 +1,25 @@
+{% include "header.html" %}
+<div class="jumbotron centering-result">
+    {% if added %}
+    <p class="display-3">
+        {% if updated %}
+            Updated successfully
+        {% else %}
+            Added successfully
+        {% endif %}
+    </p>
+    <p class="lead">
+        We will mail you when price comes down :)
+    </p>
+    {% else%}
+    <p class="display-3">
+        Nice!!!
+    </p>
+    <p class="lead">
+        Now it is available for {{ product.price }}. Go and buy <a href="{{ product.url }}">here</a>
+    </p>
+    {% endif %}
+</div>
+
+
+{% include "footer.html" %}

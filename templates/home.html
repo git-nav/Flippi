@@ -1,0 +1,73 @@
+{% include "header.html" %}
+
+    <!-- home -->
+    <div class="container cont-body top-space">
+      {% if products == 0 %}
+      <div class="centering">
+        <a href="{{ url_for('add_product') }}">
+          <button class="btn btn-primary" type="button" name="button">Add Product</button>
+        </a>
+        <a href="https://www.flipkart.com/" target="_blank">
+          <button style="margin-left:10px;" class="btn btn-primary" type="button" name="button">Get Product</button>
+        </a>
+      </div>
+      {% else %}
+      <div class="row">
+        {% for product in products %}
+        <div class="col-lg-3 col-md-4 col-6">
+          <div class="card bg-info" style="width:15rem; text-align:center;margin-bottom:20px;">
+              <a href="{{ product.product_url }}" target="_blank">
+                <img style="width:65%; height:70%; text-align:center;" src="{{ product.image_url }}" class="card-img-top mlr-auto" alt="">
+              </a>
+              <div class="card-body text-dark">
+              <h3 class="card-title">{{ product.product_name }}</h3>
+              <table style="text-align:left; cell-spacing:2;">
+                <tr>
+                  <td>Current price</td>
+                  <td>:</td>
+                  <td>{{ product.current_price }}</td>
+                </tr>
+                <tr>
+                  <td>Your price</td>
+                  <td>:</td>
+                  <td>{{ product.user_price }}</td>
+                </tr>
+              </table>
+              <div style="margin-top:10px;" class="row text-center">
+                <div class="col-1">
+
+                </div>
+                <div class="col-4">
+                  <a href="{{ url_for('update', product_id=product.id) }}">
+                    <button class="btn btn-primary btn-sm" type="button" name="button">Update</button>
+                  </a>
+
+                </div>
+                <div class="col-1">
+
+                </div>
+                <div class="col-4">
+                  <a href="{{ url_for('delete', product_id=product.id) }}">
+                    <button class="btn btn-primary btn-sm" type="button" name="button">Delete</button>
+                  </a>
+                </div>
+                <div class="col-1">
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <a class="top-space" href="{{ url_for('add_product') }}">
+          <button style="text-align:center;display:inline-block; margin-top:30px;;" class="btn btn-primary mlr-auto" type="button" name="button">Add Product</button>
+      </a>
+      <a class="top-space" href="https://www.flipkart.com/" target="_blank">
+          <button style="text-align:center;display:inline-block; margin-top:30px; margin-left:10px;" class="btn btn-primary mlr-auto" type="button" name="button">Get Product</button>
+      </a>
+
+      {% endif %}
+    </div>
+
+{% include "footer.html" %}

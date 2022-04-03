@@ -1,0 +1,27 @@
+<!--{% extends "bootstrap/base.html" %}-->
+
+{% import "bootstrap/wtf.html" as wtf %}
+
+<!--{% block content %}-->
+
+{% include "header.html" %}
+
+
+<div class="container top-space form">
+    <h2>Update</h2>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <p style="color:red;">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <div class="row">
+        <div style="text-align: left;" class="col-lg-8 col-md-10 mlr-auto">
+            {{ wtf.quick_form(form, novalidate=true, button_map={"submit":"primary"}) }}
+        </div>
+    </div>
+</div>
+
+{% include "footer.html" %}
+<!--{% endblock %}-->
