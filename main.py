@@ -202,7 +202,7 @@ def update(product_id):
                 web_data = response.text
                 soup = BeautifulSoup(web_data, "html.parser")
                 image_url = soup.select_one(selector=".CXW8mj img").get("src")
-                current_price = price_converter(soup.select_one(selector="._25b18c ._30jeq3"))
+                current_price = price_converter(soup.select_one(selector="._25b18c ._30jeq3").get_text())
                 if current_price <= user_price:
                     product_details = {
                         "price": format_currency(current_price, "INR", locale="en_IN"),
