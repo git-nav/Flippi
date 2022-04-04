@@ -21,11 +21,11 @@
   </head>
 
 
-  <body style="background-color: #0a4f76">
+  <body>
     <nav class="navbar fixed-top navbar-expand-md navbar-light bg-light ">
       <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url_for('home') }}"> <h3> Flippi </h3> </a>
-        <button class="navbar-toggler" type="button" name="button" data-bs-toggle="collapse" data-bs-target="#navbartarget" aria-controls="navbartarget" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand brand" href="{{ url_for('home') }}"> <h3> Flippi </h3> </a>
+        <button class="navbar-toggler button" type="button" name="button" data-bs-toggle="collapse" data-bs-target="#navbartarget" aria-controls="navbartarget" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbartarget">
@@ -52,20 +52,3 @@
         </div>
       </div>
     </nav>
-
-    <div class="centering-home">
-      <div class="row">
-        <div class="col-lg-8 col-md-10 mlr-auto">
-          <div>
-            <a href="{{ url_for('login') }}">
-              <h2 class="log-reg">Login</h2>
-            </a>
-            <a href="{{ url_for('register') }}">
-              <h2 class="log-reg">Register</h2>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-{% include 'footer.html' %}

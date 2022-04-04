@@ -21,20 +21,12 @@ header.masthead {
   opacity: 0.9;
 
 }
-.site-heading {
-  padding: 30% 0;
-}
 
 .mlr-auto {
   margin-left: auto;
   margin-right: auto;
 }
 
-@media only screen and (min-width : 768px) {
-     .site-heading {
-    padding: 27% 0;
-  }
-}
 
 .log-reg {
   border-style: solid;
@@ -82,8 +74,23 @@ header.masthead {
   top: 50%;
   -ms-transform: translateY(-50%);
   transform: translateY(-50%);
-  width: 100%;
+  width: 90%;
+  padding-left: 10%;
 }
+@media (max-width:768px) {
+    .brand {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+   }
+   .button {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+   }
+  }
+
+
 
 td {
   padding:5px;
@@ -91,10 +98,6 @@ td {
 
 .cont-body {
   margin: 70px auto 120px;
-}
-
-product-list {
-
 }
 
 footer {
