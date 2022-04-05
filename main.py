@@ -12,11 +12,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from bs4 import BeautifulSoup
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = getenv("SECRET_KEY", "admin")
+app.config["SECRET_KEY"] = getenv("SECRET_KEY")
 Bootstrap(app)
 
 # DATABASE
-app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URL", "sqlite:///dbase.db")
+app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URI")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
