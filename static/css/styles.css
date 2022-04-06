@@ -40,9 +40,8 @@ header.masthead {
 }
 
 .form {
-  padding-top: 30px;
-  padding-bottom: 30px;
-
+  padding-top: 25px;
+  padding-bottom: 40px;
 }
 
 
@@ -59,6 +58,17 @@ header.masthead {
   -ms-transform: translateY(-50%);
   transform: translateY(-50%);
   width: 80%;
+}
+
+@media only screen and (max-width: 768px){
+    .centering {
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  width: 90%;
+  }
+
 }
 
 .centering-result {
