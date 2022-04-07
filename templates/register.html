@@ -1,10 +1,16 @@
-
-<!--{% extends "bootstrap/base.html" %}-->
+{% extends "bootstrap/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-<!--{% block content %}-->
+{% block head %}
+{{ super() }}
 {% include "header-form.html" %}
+{% endblock %}
 
+{% block title %}
+Flippi
+{% endblock %}
+
+{% block content %}
 <div class="container top-space ">
     <h2>Register</h2>
     <div class="row">
@@ -15,4 +21,4 @@
 </div>
 
 {% include "footer.html" %}
-<!--{% endblock %}-->
+{% endblock %}

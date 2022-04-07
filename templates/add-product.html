@@ -1,10 +1,16 @@
-<!--{% extends "bootstrap/base.html" %}-->
+{% extends "bootstrap/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-<!--{% block content %}-->
-
+{% block head %}
+{{ super() }}
 {% include "header-form.html" %}
+{% endblock %}
 
+{% block title %}
+Flippi
+{% endblock %}
+
+{% block content %}
 <div class="container top-space form">
     <h2>Add Product</h2>
     {% with messages= get_flashed_messages() %}
@@ -22,4 +28,4 @@
 </div>
 
 {% include "footer.html" %}
-<!--{% endblock %}-->
+{% endblock %}
