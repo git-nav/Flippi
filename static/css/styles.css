@@ -9,18 +9,6 @@ html {
   font-size: 14px;
 }
 
-/* index */
-
-header.masthead {
-  /* margin-bottom: 50px; */
-  background: center;
-  background-color: #868e96;
-  /* background-attachment: scroll; */
-  /* position: relative; */
-  background-size: cover;
-  opacity: 0.9;
-
-}
 
 .mlr-auto {
   margin-left: auto;
