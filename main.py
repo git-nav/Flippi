@@ -32,8 +32,8 @@ header = {
 }
 
 
-class User(UserMixin, db.Model):
-    __tablename__ = "user"
+class Usr(UserMixin, db.Model):
+    __tablename__ = "usr"
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     email = Column(String, nullable=False)
@@ -44,8 +44,8 @@ class User(UserMixin, db.Model):
 class Product(db.Model):
     __tablename__ = "product"
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("user.id"))
-    user = relationship("User", back_populates="products")
+    user_id = Column(Integer, ForeignKey("usr.id"))
+    user = relationship("Usr", back_populates="products")
     product_name = Column(String, nullable=False)
     product_url = Column(String, nullable=False)
     image_url = Column(String, nullable=False)
@@ -78,7 +78,7 @@ def valid_user(product_id):
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.filter_by(id=user_id).first()
+    return Usr.query.filter_by(id=user_id).first()
 
 
 @app.route("/")
@@ -93,11 +93,11 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         email = form.email.data
-        if User.query.filter_by(email=email).first():
+        if Usr.query.filter_by(email=email).first():
             flash("Email already exists, login")
             return redirect(url_for("login"))
         password = generate_password_hash(password=form.password.data, method="pbkdf2:sha256", salt_length=5)
-        new_user = User(
+        new_user = Usr(
             name=form.name.data,
             email=email,
             password=password
@@ -114,7 +114,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         email = form.email.data
-        user = User.query.filter_by(email=email).first()
+        user = Usr.query.filter_by(email=email).first()
         if user is None:
             flash("Email doesn't exists")
         elif not check_password_hash(pwhash=user.password, password=form.password.data):
@@ -133,6 +133,7 @@ def home():
     products = current_user.products
     if len(products) == 0:
         products = 0
+    users = Usr.query.all()
     return render_template("home.html", products=products)
 
 
