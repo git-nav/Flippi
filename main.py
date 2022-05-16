@@ -166,8 +166,8 @@ def add_product():
                     product_name=name,
                     product_url=url,
                     image_url=image_url,
-                    current_price=format_currency(current_price, "INR", locale="en_IN"),
-                    user_price=format_currency(user_price, "INR", locale="en_IN"),
+                    current_price=format_currency(current_price, "INR", locale="en_IN")[:-3],
+                    user_price=format_currency(user_price, "INR", locale="en_IN")[:-3],
                     user=current_user
                 )
                 db.session.add(new_product)
@@ -192,7 +192,7 @@ def update(product_id):
             user_price = price_converter(form.user_price.data)
             name = form.product_name.data.title()
             if product.product_name == name and product.product_url == url and \
-                    product.user_price == format_currency(user_price, "INR", locale="en_IN"):
+                    product.user_price == format_currency(user_price, "INR", locale="en_IN")[:-3]:
                 flash("Change anything to update")
             elif "flipkart" not in url:
                 flash("We support only flipkart links")
@@ -206,7 +206,7 @@ def update(product_id):
                 current_price = price_converter(soup.select_one(selector="._25b18c ._30jeq3").get_text())
                 if current_price <= user_price:
                     product_details = {
-                        "price": format_currency(current_price, "INR", locale="en_IN"),
+                        "price": format_currency(current_price, "INR", locale="en_IN")[:-3],
                         "url": url,
                     }
                     db.session.delete(product)
@@ -216,8 +216,8 @@ def update(product_id):
                     product.product_name = name
                     product.product_url = url
                     product.image_url = image_url
-                    product.user_price = format_currency(user_price, "INR", locale="en_IN")
-                    product.current_price = format_currency(current_price, "INR", locale="en_IN")
+                    product.user_price = format_currency(user_price, "INR", locale="en_IN")[:-3]
+                    product.current_price = format_currency(current_price, "INR", locale="en_IN")[:-3]
                     db.session.commit()
                     return render_template("result.html", added=True, updated=True)
         return render_template("update.html", form=form)
