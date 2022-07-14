@@ -1,5 +1,5 @@
-from os import getenv
 import requests
+from os import getenv
 from babel.numbers import format_currency
 from flask import Flask, render_template, redirect, url_for, flash, abort
 from flask_bootstrap import Bootstrap
@@ -20,7 +20,6 @@ app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URI")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
-
 # LOGINMANAGER
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -32,20 +31,19 @@ header = {
 }
 
 
-class Usr(UserMixin, db.Model):
-    __tablename__ = "usr"
+class User(UserMixin, db.Model):
+    __tablename__ = "user"
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     email = Column(String, nullable=False)
     password = Column(String, nullable=False)
-    products = relationship("Product", back_populates="user")
+    products = relationship("Product", backref="user")
 
 
 class Product(db.Model):
     __tablename__ = "product"
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("usr.id"))
-    user = relationship("Usr", back_populates="products")
+    user_id = Column(Integer, ForeignKey("user.id"))
     product_name = Column(String, nullable=False)
     product_url = Column(String, nullable=False)
     image_url = Column(String, nullable=False)
@@ -78,7 +76,7 @@ def valid_user(product_id):
 
 @login_manager.user_loader
 def load_user(user_id):
-    return Usr.query.filter_by(id=user_id).first()
+    return User.query.filter_by(id=user_id).first()
 
 
 @app.route("/")
@@ -93,11 +91,11 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         email = form.email.data
-        if Usr.query.filter_by(email=email).first():
+        if User.query.filter_by(email=email).first():
             flash("Email already exists, login")
             return redirect(url_for("login"))
         password = generate_password_hash(password=form.password.data, method="pbkdf2:sha256", salt_length=5)
-        new_user = Usr(
+        new_user = User(
             name=form.name.data,
             email=email,
             password=password
@@ -114,7 +112,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         email = form.email.data
-        user = Usr.query.filter_by(email=email).first()
+        user = User.query.filter_by(email=email).first()
         if user is None:
             flash("Email doesn't exists")
         elif not check_password_hash(pwhash=user.password, password=form.password.data):
@@ -133,7 +131,6 @@ def home():
     products = current_user.products
     if len(products) == 0:
         products = 0
-    users = Usr.query.all()
     return render_template("home.html", products=products)
 
 
@@ -168,7 +165,7 @@ def add_product():
                     image_url=image_url,
                     current_price=format_currency(current_price, "INR", locale="en_IN")[:-3],
                     user_price=format_currency(user_price, "INR", locale="en_IN")[:-3],
-                    user=current_user
+                    user_id=current_user.id
                 )
                 db.session.add(new_product)
                 db.session.commit()
@@ -245,4 +242,4 @@ def logout():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
