@@ -1,4 +1,6 @@
 import requests
+import pytz
+from datetime import datetime
 from os import getenv
 from babel.numbers import format_currency
 from flask import Flask, render_template, redirect, url_for, flash, abort
@@ -30,9 +32,11 @@ header = {
                   " Chrome/95.0.4638.69 Safari/537.36",
 }
 
+IST = pytz.timezone("Asia/Kolkata")
 
-class User(UserMixin, db.Model):
-    __tablename__ = "user"
+
+class Member(UserMixin, db.Model):
+    __tablename__ = "member"
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     email = Column(String, nullable=False)
@@ -43,12 +47,13 @@ class User(UserMixin, db.Model):
 class Product(db.Model):
     __tablename__ = "product"
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("user.id"))
+    user_id = Column(Integer, ForeignKey("member.id"))
     product_name = Column(String, nullable=False)
     product_url = Column(String, nullable=False)
     image_url = Column(String, nullable=False)
     current_price = Column(String, nullable=False)
     user_price = Column(String, nullable=False)
+    last_checked = Column(String, nullable=False)
 
 
 if app.before_first_request:
@@ -76,7 +81,7 @@ def valid_user(product_id):
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.filter_by(id=user_id).first()
+    return Member.query.filter_by(id=user_id).first()
 
 
 @app.route("/")
@@ -91,11 +96,11 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         email = form.email.data
-        if User.query.filter_by(email=email).first():
+        if Member.query.filter_by(email=email).first():
             flash("Email already exists, login")
             return redirect(url_for("login"))
         password = generate_password_hash(password=form.password.data, method="pbkdf2:sha256", salt_length=5)
-        new_user = User(
+        new_user = Member(
             name=form.name.data,
             email=email,
             password=password
@@ -112,7 +117,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         email = form.email.data
-        user = User.query.filter_by(email=email).first()
+        user = Member.query.filter_by(email=email).first()
         if user is None:
             flash("Email doesn't exists")
         elif not check_password_hash(pwhash=user.password, password=form.password.data):
@@ -159,13 +164,15 @@ def add_product():
                 }
                 return render_template("result.html", added=False, product=data)
             else:
+                time_data = datetime.now(IST)
                 new_product = Product(
                     product_name=name,
                     product_url=url,
                     image_url=image_url,
                     current_price=format_currency(current_price, "INR", locale="en_IN")[:-3],
                     user_price=format_currency(user_price, "INR", locale="en_IN")[:-3],
-                    user_id=current_user.id
+                    user_id=current_user.id,
+                    last_checked=str(time_data.strftime("%I:%M %p"))
                 )
                 db.session.add(new_product)
                 db.session.commit()
@@ -210,11 +217,13 @@ def update(product_id):
                     db.session.commit()
                     return render_template("result.html", added=False, product=product_details)
                 else:
+                    time_data = datetime.now(IST)
                     product.product_name = name
                     product.product_url = url
                     product.image_url = image_url
                     product.user_price = format_currency(user_price, "INR", locale="en_IN")[:-3]
                     product.current_price = format_currency(current_price, "INR", locale="en_IN")[:-3]
+                    product.last_checked = str(time_data.strftime("%I:%M %p"))
                     db.session.commit()
                     return render_template("result.html", added=True, updated=True)
         return render_template("update.html", form=form)
@@ -242,4 +251,4 @@ def logout():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port="5000")
