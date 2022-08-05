@@ -6,7 +6,7 @@ from babel.numbers import format_currency
 from flask import Flask, render_template, redirect, url_for, flash, abort
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
 from forms import RegisterForm, LoginForm, AddProductForm
@@ -53,7 +53,7 @@ class Product(db.Model):
     image_url = Column(String, nullable=False)
     current_price = Column(String, nullable=False)
     user_price = Column(String, nullable=False)
-    last_checked = Column(String, nullable=False)
+    last_checked = Column(Text, nullable=False)
 
 
 if app.before_first_request:
@@ -172,7 +172,7 @@ def add_product():
                     current_price=format_currency(current_price, "INR", locale="en_IN")[:-3],
                     user_price=format_currency(user_price, "INR", locale="en_IN")[:-3],
                     user_id=current_user.id,
-                    last_checked=str(time_data.strftime("%I:%M %p"))
+                    last_checked=time_data.strftime("%I:%M %p")
                 )
                 db.session.add(new_product)
                 db.session.commit()
@@ -223,7 +223,7 @@ def update(product_id):
                     product.image_url = image_url
                     product.user_price = format_currency(user_price, "INR", locale="en_IN")[:-3]
                     product.current_price = format_currency(current_price, "INR", locale="en_IN")[:-3]
-                    product.last_checked = str(time_data.strftime("%I:%M %p"))
+                    product.last_checked = time_data.strftime("%I:%M %p")
                     db.session.commit()
                     return render_template("result.html", added=True, updated=True)
         return render_template("update.html", form=form)
