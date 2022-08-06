@@ -33,13 +33,9 @@
                   <td>{{ product.user_price }}</td>
                 </tr>
                 <tr>
-                  <td>Checked</td>
+                  <td>Last checked</td>
                   <td>:</td>
-                  <td>
-                    <py-script>
-                      print("Hello World")
-                    </py-script>
-                  </td>
+                  <td>{{ product.last_checked }} ago</td>
                 </tr>
               </table>
               <div style="margin-top:10px;" class="row text-center">

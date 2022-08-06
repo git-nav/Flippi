@@ -6,7 +6,7 @@ from babel.numbers import format_currency
 from flask import Flask, render_template, redirect, url_for, flash, abort
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
 from forms import RegisterForm, LoginForm, AddProductForm
@@ -53,7 +53,7 @@ class Product(db.Model):
     image_url = Column(String, nullable=False)
     current_price = Column(String, nullable=False)
     user_price = Column(String, nullable=False)
-    last_checked = Column(Text, nullable=False)
+    last_checked = Column(DateTime, nullable=False)
 
 
 if app.before_first_request:
@@ -70,6 +70,25 @@ def price_converter(data):
         return int(round(float(price)))
     except ValueError:
         return None
+
+
+def time_cal(checked_time):
+    current_time = datetime.now(IST).replace(tzinfo=None)
+    time_data = current_time - checked_time
+    seconds = time_data.total_seconds()
+    if seconds <= 60:
+        return str(f"{int(seconds)} sec")
+    elif seconds <= 3600:
+        time = int(seconds / 60)
+        return str(f"{time} min")
+    elif seconds <= 86400:
+        time = int(seconds / 3600)
+        return str(f"{time} hr")
+    else:
+        time = int(seconds / 86400)
+        if time == 1:
+            return str(f"{time} day")
+        return str(f"{time} days")
 
 
 def valid_user(product_id):
@@ -134,9 +153,23 @@ def home():
     if not current_user.is_authenticated:
         return redirect(url_for("index"))
     products = current_user.products
-    if len(products) == 0:
-        products = 0
-    return render_template("home.html", products=products)
+    cart = []
+    if products:
+        for each in products:
+            product = {
+                "id": each.id,
+                "product_name": each.product_name,
+                "product_url": each.product_url,
+                "image_url": each.image_url,
+                "current_price": each.current_price,
+                "user_price": each.user_price,
+                "last_checked": time_cal(each.last_checked),
+            }
+            cart.append(product)
+
+    else:
+        cart = 0
+    return render_template("home.html", products=cart)
 
 
 @app.route("/add-product", methods=["GET", "POST"])
@@ -164,7 +197,6 @@ def add_product():
                 }
                 return render_template("result.html", added=False, product=data)
             else:
-                time_data = datetime.now(IST)
                 new_product = Product(
                     product_name=name,
                     product_url=url,
@@ -172,7 +204,7 @@ def add_product():
                     current_price=format_currency(current_price, "INR", locale="en_IN")[:-3],
                     user_price=format_currency(user_price, "INR", locale="en_IN")[:-3],
                     user_id=current_user.id,
-                    last_checked=time_data.strftime("%I:%M %p")
+                    last_checked=datetime.now(IST)
                 )
                 db.session.add(new_product)
                 db.session.commit()
@@ -217,13 +249,12 @@ def update(product_id):
                     db.session.commit()
                     return render_template("result.html", added=False, product=product_details)
                 else:
-                    time_data = datetime.now(IST)
                     product.product_name = name
                     product.product_url = url
                     product.image_url = image_url
                     product.user_price = format_currency(user_price, "INR", locale="en_IN")[:-3]
                     product.current_price = format_currency(current_price, "INR", locale="en_IN")[:-3]
-                    product.last_checked = time_data.strftime("%I:%M %p")
+                    product.last_checked = datetime.now(IST)
                     db.session.commit()
                     return render_template("result.html", added=True, updated=True)
         return render_template("update.html", form=form)
