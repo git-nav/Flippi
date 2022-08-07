@@ -190,6 +190,7 @@ def add_product():
             soup = BeautifulSoup(web_data, 'html.parser')
             image_url = soup.select_one(selector=".CXW8mj img").get("src")
             current_price = price_converter(soup.select_one(selector="._25b18c ._30jeq3").get_text())
+            current_time = datetime.now().replace(tzinfo=None)
             if current_price <= user_price:
                 data = {
                     "price": current_price,
@@ -204,7 +205,7 @@ def add_product():
                     current_price=format_currency(current_price, "INR", locale="en_IN")[:-3],
                     user_price=format_currency(user_price, "INR", locale="en_IN")[:-3],
                     user_id=current_user.id,
-                    last_checked=datetime.now(IST)
+                    last_checked=current_time
                 )
                 db.session.add(new_product)
                 db.session.commit()
@@ -240,6 +241,7 @@ def update(product_id):
                 soup = BeautifulSoup(web_data, "html.parser")
                 image_url = soup.select_one(selector=".CXW8mj img").get("src")
                 current_price = price_converter(soup.select_one(selector="._25b18c ._30jeq3").get_text())
+                current_time = datetime.now().replace(tzinfo=None)
                 if current_price <= user_price:
                     product_details = {
                         "price": format_currency(current_price, "INR", locale="en_IN")[:-3],
@@ -254,7 +256,7 @@ def update(product_id):
                     product.image_url = image_url
                     product.user_price = format_currency(user_price, "INR", locale="en_IN")[:-3]
                     product.current_price = format_currency(current_price, "INR", locale="en_IN")[:-3]
-                    product.last_checked = datetime.now(IST)
+                    product.last_checked = current_time
                     db.session.commit()
                     return render_template("result.html", added=True, updated=True)
         return render_template("update.html", form=form)
