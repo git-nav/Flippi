@@ -190,7 +190,7 @@ def add_product():
             soup = BeautifulSoup(web_data, 'html.parser')
             image_url = soup.select_one(selector=".CXW8mj img").get("src")
             current_price = price_converter(soup.select_one(selector="._25b18c ._30jeq3").get_text())
-            current_time = datetime.now().replace(tzinfo=None)
+            current_time = datetime.now(IST).replace(tzinfo=None)
             if current_price <= user_price:
                 data = {
                     "price": current_price,
@@ -241,7 +241,7 @@ def update(product_id):
                 soup = BeautifulSoup(web_data, "html.parser")
                 image_url = soup.select_one(selector=".CXW8mj img").get("src")
                 current_price = price_converter(soup.select_one(selector="._25b18c ._30jeq3").get_text())
-                current_time = datetime.now().replace(tzinfo=None)
+                current_time = datetime.now(IST).replace(tzinfo=None)
                 if current_price <= user_price:
                     product_details = {
                         "price": format_currency(current_price, "INR", locale="en_IN")[:-3],
