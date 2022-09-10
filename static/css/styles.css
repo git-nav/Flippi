@@ -1,20 +1,29 @@
-body {
-  text-align: center;
-}
-.top-space {
-  margin-top: 100px;
-}
-
+                               /*---Tag selector---*/
 html {
   font-size: 14px;
 }
 
-
-.mlr-auto {
-  margin-left: auto;
-  margin-right: auto;
+body {
+  text-align: center;
 }
 
+table {
+  text-align:left;
+  cell-spacing:2;
+}
+
+td {
+  padding:5px;
+}
+
+                                 /*---Class selector---*/
+.mt-6 {
+    margin-top: 6rem;
+}
+
+.index-background {
+    background-color: #0a4f76;
+}
 
 .log-reg {
   border-style: solid;
@@ -23,40 +32,50 @@ html {
   color: white;
   display: inline-block;
   width: 50%;
-  position: relative;
-  top : 20px;
 }
-
-.form {
-  padding-top: 25px;
-  padding-bottom: 40px;
-}
-
 
 .log-reg:hover {
   color: #343a40;
   background-color:#f8f9fa;
 }
 
+/* ---form-class--- */
+
+.form {
+  padding-top: 25px;
+  padding-bottom: 40px;
+}
+
+.control-label {
+    font-family: "Helvetica Neue", sans-serif;
+    font-weight: 700;
+    padding-bottom: .25rem;
+}
+.form-group {
+    padding-bottom: 1rem;
+}
+
+
 /* home */
+
+.product-image {
+     width:65%;
+     height:70%;
+     padding-top:10px;
+}
+
+.product {
+     width:15rem;
+     text-align:center;
+     margin-bottom:20px;
+}
 
 .centering {
   position: absolute;
   top: 50%;
   -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
-  width: 80%;
-}
-
-@media only screen and (max-width: 768px){
-    .centering {
-  position: absolute;
-  top: 50%;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
-  width: 90%;
-  }
-
+  transform: translateX(-50%);
+  display:inline-block;
 }
 
 .centering-result {
@@ -67,31 +86,12 @@ html {
   width: 100%;
 }
 
-.centering-home {
+.centering-index {
   position: absolute;
-  top: 50%;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
-  width: 90%;
-  padding-left: 10%;
-}
-@media (max-width:768px) {
-    .brand {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-   }
-   .button {
-    position: absolute;
-    top: 5px;
-    right: 10px;
-   }
-  }
-
-
-
-td {
-  padding:5px;
+  top: 40%;
+  -ms-transform: translateY(-60%);
+  transform: translateY(-60%);
+  width: 97%;
 }
 
 .cont-body {

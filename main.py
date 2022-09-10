@@ -196,7 +196,7 @@ def add_product():
                     "price": current_price,
                     "url": url
                 }
-                return render_template("result.html", added=False, product=data)
+                return render_template("result.html", result='available', product=data)
             else:
                 new_product = Product(
                     product_name=name,
@@ -209,7 +209,7 @@ def add_product():
                 )
                 db.session.add(new_product)
                 db.session.commit()
-                return render_template("result.html", added=True)
+                return render_template("result.html", result='added')
     return render_template("add-product.html", form=form)
 
 
@@ -249,7 +249,7 @@ def update(product_id):
                     }
                     db.session.delete(product)
                     db.session.commit()
-                    return render_template("result.html", added=False, product=product_details)
+                    return render_template("result.html", result="available", product=product_details)
                 else:
                     product.product_name = name
                     product.product_url = url
@@ -258,7 +258,7 @@ def update(product_id):
                     product.current_price = format_currency(current_price, "INR", locale="en_IN")[:-3]
                     product.last_checked = current_time
                     db.session.commit()
-                    return render_template("result.html", added=True, updated=True)
+                    return render_template("result.html", result='updated')
         return render_template("update.html", form=form)
     else:
         return abort(403)
@@ -284,4 +284,4 @@ def logout():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port="5000")
+    app.run(host='0.0.0.0', port='5000')

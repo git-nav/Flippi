@@ -1,17 +1,7 @@
-{% extends "bootstrap/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
+{% include "header.html" %}
 
-{% block head %}
-{{ super() }}
-{% include "header-form.html" %}
-{% endblock %}
-
-{% block title %}
-Flippi
-{% endblock %}
-
-{% block content %}
-<div class="container top-space form">
+<div class="container mt-6 form">
     <h2>Add Product</h2>
     {% with messages= get_flashed_messages() %}
         {% if messages %}
@@ -21,11 +11,11 @@ Flippi
         {% endif %}
     {% endwith %}
     <div class="row">
-        <div style="text-align: left" class="col-lg-8 col-md-10 mlr-auto">
+        <div class="col-lg-8 col-md-10 mx-auto text-start">
             {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
         </div>
     </div>
 </div>
 
 {% include "footer.html" %}
-{% endblock %}
+

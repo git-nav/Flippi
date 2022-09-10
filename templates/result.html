@@ -1,17 +1,21 @@
 {% include "header.html" %}
 <div class="jumbotron centering-result">
-    {% if added %}
+    {% if result == "added" %}
     <p class="display-3">
-        {% if updated %}
-            Updated successfully
-        {% else %}
-            Added successfully
-        {% endif %}
+        Added successfully
     </p>
     <p class="lead">
         We will mail you when price comes down :)
     </p>
-    {% else%}
+
+    {% elif result == "updated" %}
+    <p class="display-3">
+        Updated successfully
+    </p>
+    <p class="lead">
+        We will mail you when price comes down :)
+    </p>
+    {% else %}
     <p class="display-3">
         Nice!!!
     </p>
