@@ -60,16 +60,21 @@ if app.before_first_request:
     db.create_all()
 
 
-def price_converter(data):
-    price = str(data)
-    if "₹" in price:
-        price = price.replace("₹", "")
-    if "," in price:
-        price = price.replace(",", "")
+def int_price(data):
+    temp_price = str(data)
+    if "₹" in temp_price:
+        temp_price = temp_price.replace("₹", "")
+    if "," in temp_price:
+        temp_price = temp_price.replace(",", "")
     try:
-        return int(round(float(price)))
+        return int(round(float(temp_price)))
     except ValueError:
         return None
+
+
+def price(data):
+    formatted_price = format_currency(data, "INR", locale="en_IN")[:-3]
+    return formatted_price
 
 
 def time_cal(checked_time):
@@ -178,18 +183,18 @@ def add_product():
     form = AddProductForm()
     if form.validate_on_submit():
         url = form.product_url.data
-        user_price = price_converter(form.user_price.data)
+        user_price = int_price(form.user_price.data)
         name = form.product_name.data.title()
         if "flipkart" not in url:
             flash("We support only flipkart links")
-        elif price_converter(user_price) is None:
+        elif int_price(user_price) is None:
             flash("Enter price without any symbols")
         else:
             response = requests.get(url, headers=header)
             web_data = response.text
             soup = BeautifulSoup(web_data, 'html.parser')
             image_url = soup.select_one(selector=".CXW8mj img").get("src")
-            current_price = price_converter(soup.select_one(selector="._25b18c ._30jeq3").get_text())
+            current_price = int_price(soup.select_one(selector="._25b18c ._30jeq3").get_text())
             current_time = datetime.now(IST).replace(tzinfo=None)
             if current_price <= user_price:
                 data = {
@@ -202,8 +207,8 @@ def add_product():
                     product_name=name,
                     product_url=url,
                     image_url=image_url,
-                    current_price=format_currency(current_price, "INR", locale="en_IN")[:-3],
-                    user_price=format_currency(user_price, "INR", locale="en_IN")[:-3],
+                    current_price=price(current_price),
+                    user_price=price(user_price),
                     user_id=current_user.id,
                     last_checked=current_time
                 )
@@ -221,12 +226,12 @@ def update(product_id):
         form = AddProductForm(
             product_name=product.product_name,
             product_url=product.product_url,
-            user_price=price_converter(product.user_price)
+            user_price=int_price(product.user_price)
         )
 
         if form.validate_on_submit():
             url = form.product_url.data
-            user_price = price_converter(form.user_price.data)
+            user_price = int_price(form.user_price.data)
             name = form.product_name.data.title()
             if product.product_name == name and product.product_url == url and \
                     product.user_price == format_currency(user_price, "INR", locale="en_IN")[:-3]:
@@ -240,11 +245,11 @@ def update(product_id):
                 web_data = response.text
                 soup = BeautifulSoup(web_data, "html.parser")
                 image_url = soup.select_one(selector=".CXW8mj img").get("src")
-                current_price = price_converter(soup.select_one(selector="._25b18c ._30jeq3").get_text())
+                current_price = int_price(soup.select_one(selector="._25b18c ._30jeq3").get_text())
                 current_time = datetime.now(IST).replace(tzinfo=None)
                 if current_price <= user_price:
                     product_details = {
-                        "price": format_currency(current_price, "INR", locale="en_IN")[:-3],
+                        "price": price(current_price),
                         "url": url,
                     }
                     db.session.delete(product)
@@ -254,14 +259,40 @@ def update(product_id):
                     product.product_name = name
                     product.product_url = url
                     product.image_url = image_url
-                    product.user_price = format_currency(user_price, "INR", locale="en_IN")[:-3]
-                    product.current_price = format_currency(current_price, "INR", locale="en_IN")[:-3]
+                    product.user_price = price(user_price)
+                    product.current_price = price(current_price)
                     product.last_checked = current_time
                     db.session.commit()
                     return render_template("result.html", result='updated')
         return render_template("update.html", form=form)
     else:
         return abort(403)
+
+
+@app.route("/refresh/<int:product_id>", methods=["GET", "POST"])
+@login_required
+def refresh(product_id):
+    product = Product.query.filter_by(id=product_id).first()
+    product_url = product.product_url
+    user_price = product.user_price
+    response = requests.get(product_url, headers=header)
+    web_data = response.text
+    soup = BeautifulSoup(web_data)
+    current_price = int_price(soup.select_one(selector="._25b18c ._30jeq3").get_text())
+    current_time = datetime.now(IST).replace(tzinfo=None)
+    if current_price <= int_price(user_price):
+        product_details = {
+            "price": price(current_price),
+            "url": product_url,
+        }
+        db.session.delete(product)
+        db.session.commit()
+        return render_template("result.html", result="available", product=product_details)
+    else:
+        product.current_price = price(current_price)
+        product.last_checked = current_time
+        db.session.commit()
+        return redirect(url_for('home'))
 
 
 @app.route("/delete/<int:product_id>", methods=["GET", "POST"], endpoint="delete")
@@ -284,4 +315,4 @@ def logout():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port='5000')
+    app.run(host='0.0.0.0', port='5000', debug=True)

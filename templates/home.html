@@ -39,12 +39,17 @@
                 </tr>
               </table>
               <div class="row mt-2">
-                <div class="col">
+                <div class="col-4">
+                  <a href="{{ url_for('refresh', product_id=product.id) }}">
+                    <button class="btn btn-primary btn-sm">Refresh</button>
+                  </a>
+                </div>
+                <div class="col-4">
                   <a href="{{ url_for('update', product_id=product.id) }}">
                     <button class="btn btn-primary btn-sm" type="button" name="button">Update</button>
                   </a>
                 </div>
-                <div class="col">
+                <div class="col-4">
                   <a href="{{ url_for('delete', product_id=product.id) }}">
                     <button class="btn btn-primary btn-sm" type="button" name="button">Delete</button>
                   </a>
