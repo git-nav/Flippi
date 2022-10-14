@@ -1,3 +1,4 @@
+import time
 import requests
 import pytz
 from datetime import datetime
@@ -12,6 +13,8 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, cur
 from forms import RegisterForm, LoginForm, AddProductForm
 from werkzeug.security import generate_password_hash, check_password_hash
 from bs4 import BeautifulSoup
+from threading import Thread
+from checker import run_checker
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = getenv("SECRET_KEY")
@@ -314,5 +317,15 @@ def logout():
     return redirect(url_for("index"))
 
 
+def ping():
+    requests.get("https://flippi-git-nav.cloud.okteto.net/")
+    print("Pinged")
+    time.sleep(36000)
+
+
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port='5000', debug=True)
+    t1 = Thread(target=run_checker)
+    t1.start()
+    t2 = Thread(target=ping)
+    t2.start()
+    app.run(host='0.0.0.0', port='5000')

@@ -3,12 +3,12 @@
     <!-- home -->
     <div class="container cont-body mt-6">
       {% if products == 0 %}
-      <div class="centering mx-auto">
+      <div class="centering">
         <a href="{{ url_for('add_product') }}">
-          <button class="btn btn-primary me-2" type="button" name="button">Add Product</button>
+          <button class="btn btn-primary mb-2" type="button" name="button">Add Product</button>
         </a>
         <a href="https://www.flipkart.com/" target="_blank">
-          <button class="btn btn-primary" type="button" name="button">Get Product</button>
+          <button class="btn btn-primary mb-2" type="button" name="button">Get Product</button>
         </a>
       </div>
       {% else %}
