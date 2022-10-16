@@ -1,20 +1,22 @@
-import time
-import requests
-import pytz
 from datetime import datetime
 from os import getenv
+from threading import Thread
+
+import pytz
+import requests
 from babel.numbers import format_currency
+from bs4 import BeautifulSoup
 from flask import Flask, render_template, redirect, url_for, flash, abort
 from flask_bootstrap import Bootstrap
+from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
-from forms import RegisterForm, LoginForm, AddProductForm
 from werkzeug.security import generate_password_hash, check_password_hash
-from bs4 import BeautifulSoup
-from threading import Thread
+from waitress import serve
+
 from checker import run_checker
+from forms import RegisterForm, LoginForm, AddProductForm
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = getenv("SECRET_KEY")
@@ -195,7 +197,7 @@ def add_product():
         else:
             response = requests.get(url, headers=header)
             web_data = response.text
-            soup = BeautifulSoup(web_data, 'html.parser')
+            soup = BeautifulSoup(web_data, features="lxml")
             image_url = soup.select_one(selector=".CXW8mj img").get("src")
             current_price = int_price(soup.select_one(selector="._25b18c ._30jeq3").get_text())
             current_time = datetime.now(IST).replace(tzinfo=None)
@@ -246,7 +248,7 @@ def update(product_id):
             else:
                 response = requests.get(url, headers=header)
                 web_data = response.text
-                soup = BeautifulSoup(web_data, "html.parser")
+                soup = BeautifulSoup(web_data, features="lxml")
                 image_url = soup.select_one(selector=".CXW8mj img").get("src")
                 current_price = int_price(soup.select_one(selector="._25b18c ._30jeq3").get_text())
                 current_time = datetime.now(IST).replace(tzinfo=None)
@@ -280,7 +282,7 @@ def refresh(product_id):
     user_price = product.user_price
     response = requests.get(product_url, headers=header)
     web_data = response.text
-    soup = BeautifulSoup(web_data)
+    soup = BeautifulSoup(web_data, features="lxml")
     current_price = int_price(soup.select_one(selector="._25b18c ._30jeq3").get_text())
     current_time = datetime.now(IST).replace(tzinfo=None)
     if current_price <= int_price(user_price):
@@ -320,4 +322,4 @@ def logout():
 if __name__ == "__main__":
     t1 = Thread(target=run_checker)
     t1.start()
-    app.run(host="0.0.0.0", port=getenv("PORT"))
+    serve(app, host="0.0.0.0", port=5000)

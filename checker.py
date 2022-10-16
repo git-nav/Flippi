@@ -58,7 +58,7 @@ def update():
         db_current_price = price_converter(product[5])
         response = requests.get(product_link, headers=header)
         web_data = response.text
-        soup = BeautifulSoup(web_data, "html.parser")
+        soup = BeautifulSoup(web_data, features="lxml")
         current_price_str = soup.select_one(selector="._25b18c ._30jeq3").get_text()
         current_price = price_converter(current_price_str)
         current_time = datetime.now(IST).replace(tzinfo=None)
