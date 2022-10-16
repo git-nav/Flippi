@@ -318,14 +318,15 @@ def logout():
 
 
 def ping():
-    requests.get("https://flippi-git-nav.cloud.okteto.net/")
-    print("Pinged")
-    time.sleep(36000)
+    app.run(host='0.0.0.0', port='5000')
+    # requests.get("https://flippi-git-nav.cloud.okteto.net/")
+    # print("Pinged")
+    # time.sleep(36000)
 
 
 if __name__ == "__main__":
-    t1 = Thread(target=run_checker)
-    t1.start()
+    # t1 = Thread(target=run_checker)
+    # t1.start()
     t2 = Thread(target=ping)
     t2.start()
-    app.run(host='0.0.0.0', port='5000')
+    print("hello")
