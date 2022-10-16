@@ -317,16 +317,7 @@ def logout():
     return redirect(url_for("index"))
 
 
-def ping():
-    app.run(host='0.0.0.0', port='5000')
-    # requests.get("https://flippi-git-nav.cloud.okteto.net/")
-    # print("Pinged")
-    # time.sleep(36000)
-
-
 if __name__ == "__main__":
-    # t1 = Thread(target=run_checker)
-    # t1.start()
-    t2 = Thread(target=ping)
-    t2.start()
-    print("hello babe")
+    t1 = Thread(target=run_checker)
+    t1.start()
+    app.run(host="0.0.0.0", port=getenv("PORT"))
