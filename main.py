@@ -320,4 +320,4 @@ def logout():
 if __name__ == "__main__":
     t1 = Thread(target=run_checker)
     t1.start()
-    app.run(host='0.0.0.0', port='5000')
+    app.run()
