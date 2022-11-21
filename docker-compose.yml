@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  development_flippi:
+  flippi:
     build: .
     expose:
     - "5000"
