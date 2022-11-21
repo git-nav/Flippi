@@ -1,6 +1,5 @@
 from datetime import datetime
 from os import getenv
-from threading import Thread
 
 import pytz
 import requests
@@ -15,7 +14,6 @@ from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 from waitress import serve
 
-from checker import run_checker
 from forms import RegisterForm, LoginForm, AddProductForm
 
 app = Flask(__name__)
@@ -320,6 +318,4 @@ def logout():
 
 
 if __name__ == "__main__":
-    t1 = Thread(target=run_checker)
-    t1.start()
     serve(app, host="0.0.0.0", port=5000)
