@@ -1,5 +1,6 @@
 from datetime import datetime
 from os import getenv
+from logging import basicConfig, INFO, StreamHandler, FileHandler, info as loginfo, error as logerror 
 
 import pytz
 import requests
@@ -19,6 +20,9 @@ from forms import RegisterForm, LoginForm, AddProductForm
 app = Flask(__name__)
 app.config["SECRET_KEY"] = getenv("SECRET_KEY")
 Bootstrap(app)
+
+basicConfig(level=INFO, format="%(asctime)s:%(levelname)s:%(message)s",
+            handlers=[FileHandler("log.txt"), StreamHandler()])
 
 # DATABASE
 app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URI")
