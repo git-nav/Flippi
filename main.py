@@ -25,7 +25,7 @@ basicConfig(level=INFO, format="%(asctime)s:%(levelname)s:%(message)s",
             handlers=[FileHandler("log.txt"), StreamHandler()])
 
 # DATABASE
-app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URI")
+app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
